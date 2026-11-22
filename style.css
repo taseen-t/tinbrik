@@ -309,39 +309,36 @@ details[open] .sv-plus::after { rotate: 0deg; }
 .hw-h.in em { background-size: 0% 26%, 100% 26%; }
 .hw-intro { margin: 0; max-width: 400px; font-size: 18px; line-height: 1.45; color: var(--muted); }
 .hw-cards { display: flex; flex-direction: column; gap: 16px; }
-/* Compare table: Figma's plan header (name, line, button) stays stuck while you scroll,
-   Raycast's dark featured column and quiet lines, Notion's row groups that open and close. */
-.hw-cmp { border-radius: 20px; background: #fff; overflow-x: clip; } /* clip, not auto: a scroll box would unstick the header */
+/* Compare table, after Figma's "Compare all features": no box, centred values, a black rule under the
+   plan names (which stick under the nav), light row lines, section headings with an arrow that fold them. */
+.hw-cmp { overflow-x: clip; } /* clip, not auto: a scroll box would unstick the header */
 .hw-cmp table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
-.hw-cmp thead th:first-child { width: 20%; }
-.hw-cmp th, .hw-cmp td { padding: 14px 20px; border-bottom: 1px solid var(--faint); text-align: left; vertical-align: top; font-weight: 400; }
-.hw-cmp thead th { position: sticky; top: 64px; z-index: 2; background: #fff; padding-block: 22px 18px; vertical-align: bottom; }
-.hw-cmp thead th:first-child { border-top-left-radius: 20px; }
-.hw-cmp thead.stuck th { box-shadow: 0 -40px 0 var(--bg), 0 -76px 0 var(--bg), 0 1px 0 var(--faint); } /* two copies so the rounded top corners of the mask sit off screen */
-.hw-cmp thead th:last-child { border-top-right-radius: 20px; }
-.hw-cmp thead b { display: block; font-size: 26px; font-weight: 500; letter-spacing: -0.03em; }
-.hw-cmp thead span:not([aria-hidden]) { display: block; margin: 4px 0 14px; font-size: var(--fs-s); color: var(--muted); }
-/* Monthly column: ink with a yellow edge, top to bottom. */
-.hw-cmp :is(thead th, td):nth-child(2) { background: var(--ink); color: #ffffffd9; }
-.hw-cmp thead th:nth-child(2) { border-top: 3px solid var(--hl); border-radius: 14px 14px 0 0; color: #fff; }
-.hw-cmp thead th:nth-child(2) span:not([aria-hidden]) { color: #ffffff99; }
-.hw-cmp td:nth-child(2) { border-bottom-color: #ffffff1f; }
-.hw-cmp tbody:last-child tr:last-child td:nth-child(2) { border-radius: 0 0 14px 14px; }
-.hw-cmp tbody th { font-size: var(--fs-s); color: var(--muted); }
-.hw-cmp tbody:last-child tr:last-child > * { border-bottom: 0; }
-/* Group rows: a heading you click to fold its rows away. */
+.hw-cmp thead th:first-child { width: 22%; }
+.hw-cmp th, .hw-cmp td { padding: 16px 12px; border-bottom: 1px solid var(--faint); text-align: center; vertical-align: middle; font-weight: 400; font-size: 15px; line-height: 1.4; }
+.hw-cmp :is(th, td):first-child { padding-left: 0; text-align: left; }
+.hw-cmp thead th { position: sticky; top: 64px; z-index: 2; padding-block: 14px; border-bottom: 1px solid var(--ink); background: var(--bg); transition: background-color 0s; }
+.hw-cmp thead.stuck th { box-shadow: 0 -40px 0 var(--bg), 0 -76px 0 var(--bg); } /* paints over rows above it; two copies keep the mask's corners off screen */
+.hw-cmp thead th:first-child { vertical-align: bottom; font-size: 15px; font-weight: 500; }
+.hw-cmp thead b { display: block; font-size: 17px; font-weight: 500; letter-spacing: -0.01em; }
+.hw-cmp thead span:not([aria-hidden]) { display: block; margin: 2px 0 10px; font-size: 13px; color: var(--muted); }
+.hw-cmp thead .pill { height: 34px; padding: 0 14px; font-size: 13px; }
+.hw-cmp tbody th { color: var(--ink); }
+/* Section headings: label on the left, an arrow on the right that flips when folded. */
 .hw-gh th { padding: 0; }
-.hw-gh button { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 22px 20px 10px; border: 0; background: none; font: inherit; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); cursor: pointer; }
-.hw-gh button:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
-.hw-gh [aria-expanded="true"] .hw-x::after { rotate: 0deg; }
+.hw-gh button { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 22px 0 14px; border: 0; background: none; font: inherit; font-size: 16px; font-weight: 500; color: var(--ink); cursor: pointer; }
+.hw-gh button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.hw-ar { display: inline-block; font-size: 18px; transition: rotate .3s var(--ease-out); }
+.hw-grp.shut .hw-ar { rotate: 180deg; }
 .hw-grp.shut tr:not(.hw-gh) { display: none; }
-.hw-cmp tbody tr:not(.hw-gh):hover > * { background-color: #ffe36e4d; } /* the row under the mouse lights up */
-.hw-cmp tbody tr:not(.hw-gh):hover > td:nth-child(2) { background-color: #2b2a1f; }
+.hw-cmp tbody tr:not(.hw-gh):hover > * { background-color: #11111108; }
 .hw-cmp tbody tr > * { transition: background-color .15s; }
-.hw-l { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; }
-.hw-l li { display: flex; gap: 8px; }
-.hw-i { flex: none; width: 16px; height: 16px; margin-top: 2px; fill: none; stroke: var(--ink); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.hw-cmp td:nth-child(2) .hw-i { stroke: var(--hl); }
+/* "What's included": each plan's own list, filled check circles like Figma's ticks, in ink and yellow. */
+.hw-l { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; text-align: left; }
+.hw-l li { display: flex; gap: 10px; }
+.hw-i { flex: none; width: 20px; height: 20px; }
+.hw-i circle { fill: var(--ink); }
+.hw-i path { fill: none; stroke: var(--hl); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.hw-cmp tr:has(.hw-l) td { vertical-align: top; }
 /* Arrow buttons: the arrow slides out and a fresh one slides in on hover. */
 .hw .pill span[aria-hidden="true"] { display: inline-block; overflow: hidden; width: 1em; line-height: 1.2; vertical-align: -0.1em; -webkit-text-fill-color: transparent; text-shadow: 0 0 currentColor, -1em 1em currentColor; transition: text-shadow .35s var(--ease-out); }
 .hw .pill:hover span[aria-hidden="true"] { text-shadow: 1em -1em currentColor, 0 0 currentColor; }
@@ -453,7 +450,6 @@ details[open] .hw-x::after { rotate: 0deg; }
   .hw-cmp { overflow-x: auto; }
   .hw-cmp table { width: 640px; }
   .hw-cmp thead th { position: static; }
-  .hw-cmp thead b { font-size: 20px; }
   .foot { padding-inline: 16px; }
   .ft-top, .ft-cols { grid-template-columns: 1fr; }
 }
