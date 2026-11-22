@@ -315,19 +315,16 @@ details[open] .sv-plus::after { rotate: 0deg; }
 .hw-cmp thead th { position: sticky; top: 64px; z-index: 2; padding-block: 14px; border-bottom: 1px solid var(--ink); background: var(--bg); transition: background-color 0s; }
 .hw-cmp thead.stuck th { box-shadow: 0 -40px 0 var(--bg), 0 -76px 0 var(--bg); } /* paints over rows above it; two copies keep the mask's corners off screen */
 .hw-cmp thead th:first-child { vertical-align: bottom; font-size: 15px; font-weight: 500; }
-.hw-cmp thead b { display: block; font-size: 17px; font-weight: 500; letter-spacing: -0.01em; }
+.hw-cmp thead b { display: block; font-size: 22px; font-weight: 500; letter-spacing: -0.01em; }
 .hw-cmp thead span:not([aria-hidden]) { display: block; margin: 2px 0 10px; font-size: 13px; color: var(--muted); }
 .hw-cmp thead .pill { height: 34px; padding: 0 14px; font-size: 13px; }
 .hw-cmp tbody th { color: var(--ink); }
-/* Section headings: label on the left, an arrow on the right that flips when folded. */
-.hw-gh th { padding: 0; }
-.hw-gh button { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 22px 0 14px; border: 0; background: none; font: inherit; font-size: 16px; font-weight: 500; color: var(--ink); cursor: pointer; }
-.hw-gh button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-.hw-ar { display: inline-block; font-size: 18px; transition: rotate .3s var(--ease-out); }
-.hw-grp.shut .hw-ar { rotate: 180deg; }
-.hw-grp.shut tr:not(.hw-gh) { display: none; }
-.hw-cmp tbody tr:not(.hw-gh):hover > * { background-color: #11111108; }
+.hw-cmp tbody tr:hover > * { background-color: #11111108; }
 .hw-cmp tbody tr > * { transition: background-color .15s; }
+/* Each section starts with a small label above its first row, and a darker line. */
+.hw-gl { display: block; margin-bottom: 6px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.hw-grp + .hw-grp tr:first-child > * { border-top: 1px solid var(--ink); }
+.hw-cmp tbody th { vertical-align: bottom; }
 /* "What's included": each plan's own list, filled check circles like Figma's ticks, in ink and yellow. */
 .hw-l { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; text-align: left; }
 .hw-l li { display: flex; gap: 10px; }
@@ -335,25 +332,14 @@ details[open] .sv-plus::after { rotate: 0deg; }
 .hw-i circle { fill: var(--ink); }
 .hw-i path { fill: none; stroke: var(--hl); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 .hw-cmp tr:has(.hw-l) td { vertical-align: top; }
-/* Plan columns on top, after Figma's plan row: three open columns split by thin rules, lined up with the table's plan columns. */
-.hw-plans { display: grid; grid-template-columns: 22% repeat(3, 1fr); border-top: 1px solid var(--ink); }
-.hw-p { display: flex; flex-direction: column; gap: 6px; padding: 20px 20px 24px; border-left: 1px solid var(--faint); }
-.hw-p:first-child { grid-column: 2; }
-.hw-p h3 { margin: 0 0 4px; font-size: 26px; font-weight: 500; letter-spacing: -0.03em; }
-.hw-p-sub { margin: 0; font-size: 14px; color: var(--muted); }
-.hw-p-pay { margin: 18px 0 0; padding-top: 14px; border-top: 1px solid var(--faint); font-size: 17px; font-weight: 500; }
-.hw-p-for { margin: 0 0 18px; font-size: 14px; color: var(--muted); }
-.hw-p .pill { align-self: flex-start; height: 40px; padding: 0 16px; margin-top: auto; }
-/* Bar above the table: big heading, phone plan picker, fold-all and the Key / All switch. */
-.hw-bar { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-top: 72px; }
+/* Bar above the table: big heading, phone plan picker and the Key / All switch. */
+.hw-bar { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-top: 24px; }
 .hw-ch { margin: 0; font-size: clamp(36px, 4.4vw, 64px); line-height: 1; letter-spacing: -0.04em; font-weight: 500; }
 .hw-ctl { display: flex; align-items: center; gap: 10px; }
-.hw-all { height: 40px; padding: 0 14px; border: 0; background: none; font: inherit; font-size: 14px; color: var(--muted); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
-.hw-all:hover { color: var(--ink); }
 .hw-seg { display: inline-flex; gap: 2px; padding: 4px; border-radius: 999px; background: #1111110d; }
 .hw-seg button { height: 34px; padding: 0 16px; border: 0; border-radius: 999px; background: none; font: inherit; font-size: 14px; color: var(--muted); cursor: pointer; }
 .hw-seg button[aria-pressed="true"] { background: #fff; color: var(--ink); font-weight: 500; box-shadow: 0 1px 2px #11111114; }
-:is(.hw-all, .hw-seg button, .hw-pick select):focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+:is(.hw-seg button, .hw-pick select):focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .hw-pick { display: none; }
 .hw-cmp[data-view="key"] .hw-more { display: none; }
 /* Column lights up on hover: hovering any cell tints its whole plan column. */
@@ -478,17 +464,13 @@ details[open] .hw-x::after { rotate: 0deg; }
   .sv-list { grid-template-columns: 1fr; }
   .sv-c:nth-child(2) { margin-top: 0; }
   /* Phones: the table scrolls sideways inside its box (the header stops sticking there). */
-  /* Phones: plan columns stack; the picker shows one plan's column beside the row labels. */
-  .hw-plans { grid-template-columns: 1fr; }
-  .hw-p:first-child { grid-column: auto; }
-  .hw-p { border-left: 0; border-bottom: 1px solid var(--faint); padding-inline: 0; }
-  .hw-bar { margin-top: 48px; }
+  /* Phones: the picker shows one plan's column beside the row labels. */
   .hw-pick { display: flex; flex-direction: column; gap: 2px; padding: 6px 12px; border-radius: 10px; background: #1111110d; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
   .hw-pick select { border: 0; background: none; font: inherit; font-size: 16px; letter-spacing: 0; text-transform: none; color: var(--ink); }
   .hw-cmp table { table-layout: auto; } /* fixed layout would keep room for the hidden plan columns */
   .hw-cmp thead th:first-child { width: 38%; }
   .hw-cmp :is(th, td):nth-child(n+2) { display: none; }
-  .hw-cmp .hw-gh th, .hw-cmp[data-show="0"] :is(th, td):nth-child(2), .hw-cmp[data-show="1"] :is(th, td):nth-child(3), .hw-cmp[data-show="2"] :is(th, td):nth-child(4) { display: table-cell; }
+  .hw-cmp[data-show="0"] :is(th, td):nth-child(2), .hw-cmp[data-show="1"] :is(th, td):nth-child(3), .hw-cmp[data-show="2"] :is(th, td):nth-child(4) { display: table-cell; }
   .foot { padding-inline: 16px; }
   .ft-top, .ft-cols { grid-template-columns: 1fr; }
 }

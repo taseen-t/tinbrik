@@ -247,12 +247,7 @@ for (const b of document.querySelectorAll('.ft-copy')) {
   });
 }
 
-// Compare table: a group heading folds its rows away and back; "Fold all" does every group.
-const hwCmp = $('#hwCmp'), hwHeads = [...document.querySelectorAll('.hw-gh button')], hwAll = $('.hw-all');
-const fold = (b, open) => { b.setAttribute('aria-expanded', open); b.closest('tbody').classList.toggle('shut', !open); };
-const syncAll = () => { hwAll.textContent = hwHeads.some((b) => b.getAttribute('aria-expanded') === 'true') ? 'Fold all' : 'Open all'; };
-for (const b of hwHeads) b.addEventListener('click', () => { fold(b, b.getAttribute('aria-expanded') !== 'true'); syncAll(); });
-hwAll.addEventListener('click', () => { const open = hwAll.textContent === 'Open all'; hwHeads.forEach((b) => fold(b, open)); syncAll(); });
+const hwCmp = $('#hwCmp');
 // Key / All: Key keeps only "The basics".
 const hwSeg = document.querySelectorAll('.hw-seg button');
 hwSeg.forEach((b) => b.addEventListener('click', () => { hwSeg.forEach((x) => x.setAttribute('aria-pressed', x === b)); hwCmp.dataset.view = b.dataset.v; }));
