@@ -1,0 +1,15 @@
+/* "Book a call": label + a highlighter-yellow calendar segment; the label rolls through phrases. */
+:is(.book, .float) { width: 236px; height: 64px; padding: 0 6px 0 26px; font-size: 18px; justify-content: space-between; gap: 10px; overflow: hidden; }
+.bt-seg {
+  display: grid; place-items: center; flex: none; width: 64px; height: calc(100% - 12px);
+  border-radius: 999px; background: var(--hl); color: var(--ink); transition: background-color .2s;
+}
+.bt-seg svg { transition: rotate .4s var(--ease-out); }
+:is(.book, .float):is(:hover, :focus-visible) .bt-seg { background: #fff; }
+:is(.book, .float):focus-visible { outline: none; } /* no ring (Taseen); the segment turning white marks keyboard focus */
+:is(.book, .float):hover .bt-seg svg { rotate: -12deg; }
+
+.bt-words { display: flex; flex-direction: column; height: 1.3em; overflow: hidden; line-height: 1.3em; white-space: nowrap; }
+.bt-words span { animation: bt-words 8s var(--ease-out) infinite; }
+@keyframes bt-words { 0%, 22% { translate: 0 0; } 25%, 47% { translate: 0 -100%; } 50%, 72% { translate: 0 -200%; } 75%, 100% { translate: 0 -300%; } }
+@media (prefers-reduced-motion: reduce) { .bt-words span { animation: none; } }
