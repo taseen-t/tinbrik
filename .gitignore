@@ -3,3 +3,4 @@ shots/
 work/
 .vercel
 .DS_Store
+.env*
