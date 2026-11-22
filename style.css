@@ -21,6 +21,10 @@
 *::before,
 *::after { box-sizing: border-box; }
 
+/* --bg is a registered colour so it can fade (the page deepens while "How to work with us" is on screen). */
+@property --bg { syntax: "<color>"; inherits: true; initial-value: #f7f4ec; }
+:root { transition: --bg .9s ease; }
+:root.hw-on { --bg: #ede6d6; }
 html, body { margin: 0; overflow-x: clip; background: var(--bg); }
 html { -webkit-font-smoothing: antialiased; scroll-padding-top: 50px; }
 body {
@@ -298,7 +302,13 @@ details[open] .sv-plus::after { rotate: 0deg; }
 .hw-top { position: sticky; top: 84px; align-self: start; display: flex; flex-direction: column; gap: 14px; }
 .hw-k { margin: 0; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
 .hw-h { margin: 0; font-size: clamp(40px, 5vw, 76px); line-height: 1; letter-spacing: -0.04em; font-weight: 500; text-wrap: balance; }
-.hw-h em { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; letter-spacing: -0.02em; }
+.hw-h em { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; letter-spacing: -0.02em; -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  /* Scribble underline: uncovered left to right once the headline is in view, like the hero. */
+  background: linear-gradient(var(--bg), var(--bg)) right bottom / 100% 26% no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M3 13c22-7 40-8 58-4s30 6 50 1 38-7 55-3 22 4 31 1' fill='none' stroke='%23ffe36e' stroke-width='6' stroke-linecap='round'/%3E%3Cpath d='M14 16c30-5 70-6 112-3s45 1 60-2' fill='none' stroke='%23ffe36e' stroke-width='3.5' stroke-linecap='round'/%3E%3C/svg%3E") left bottom / 100% 26% no-repeat;
+  transition: background-size 1.1s cubic-bezier(.6,.1,.3,1) .3s; }
+.hw-h.in em { background-size: 0% 26%, 100% 26%; }
+/* Headline shrinks as the cards scroll in (world.js sets --hs from 1 to .72). */
+.hw-h { font-size: calc(clamp(40px, 5vw, 76px) * var(--hs, 1)); }
 .hw-intro { margin: 0; max-width: 400px; font-size: 18px; line-height: 1.45; color: var(--muted); }
 .hw-cards { display: flex; flex-direction: column; gap: 16px; padding-top: 80px; }
 .hw-c { position: relative; display: flex; flex-direction: column; gap: 12px; padding: 32px; border-radius: 20px; background: #fff; transition: opacity .3s, transform .4s var(--ease-out); }
@@ -313,7 +323,7 @@ details[open] .sv-plus::after { rotate: 0deg; }
 .hw-ic { position: absolute; right: 32px; bottom: 32px; width: 64px; height: 64px; fill: none; stroke: var(--ink); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
 .hw-main .hw-ic { stroke: var(--hl); }
 /* Cards stack: each sticks a little lower than the last while the next slides up over it. */
-.hw-deck { display: flex; flex-direction: column; gap: 16px; }
+.hw-deck { position: relative; display: flex; flex-direction: column; gap: 16px; } /* relative: card offsets are measured from the deck (finder button) */
 .hw-deck[hidden] { display: none; }
 /* Stack depth: a covered card shrinks and darkens (world.js sets --s and --dim). */
 .hw-deck .hw-c { scale: var(--s, 1); transform-origin: 50% 0; }
@@ -395,6 +405,26 @@ details[open] .sv-plus::after { rotate: 0deg; }
 .hw-bricks { position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='42' height='44'%3E%3Cpath d='M0 21h42M0 43h42M41 0v21M20 22v21' stroke='%23111' stroke-opacity='.18' stroke-width='2'/%3E%3C/svg%3E"); }
 .hw-pass-t { position: relative; font: 500 10px/1 ui-monospace, Menlo, monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); }
 .hw-main:hover .hw-pass { rotate: 14deg; translate: 4px -6px; }
+/* Pass drops in: tossed onto the card with a small bounce when the card appears. */
+.hw-main.in .hw-pass { animation: passDrop 1s var(--ease-out) .45s backwards; }
+@keyframes passDrop { 0% { opacity: 0; translate: -40px -150px; rotate: -26deg; } 55% { opacity: 1; translate: 0 8px; rotate: 12deg; } 75% { translate: 0 -4px; rotate: 6deg; } 100% { translate: 0 0; rotate: 8deg; } }
+/* Icons come alive on card hover: the calendar turns, the target pulses, the bolt flickers. */
+.hw-c[data-plan="0"]:hover .hw-ic { animation: icTurn .9s var(--ease-out); }
+@keyframes icTurn { from { rotate: y 0deg; } to { rotate: y 360deg; } }
+.hw-c[data-plan="1"] .hw-ic circle { transform-box: fill-box; transform-origin: center; }
+.hw-c[data-plan="1"]:hover .hw-ic circle { animation: icPulse 1.2s ease-in-out infinite; }
+.hw-c[data-plan="1"]:hover .hw-ic circle:nth-child(2) { animation-delay: .12s; }
+.hw-c[data-plan="1"]:hover .hw-ic circle:nth-child(3) { animation-delay: .24s; }
+@keyframes icPulse { 50% { scale: 1.18; } }
+.hw-c[data-plan="2"]:hover .hw-ic { animation: icFlick .9s steps(1); }
+@keyframes icFlick { 10%, 30%, 55% { opacity: .15; } 20%, 40%, 70%, 100% { opacity: 1; } }
+/* FAQ answers slide down and fade in. */
+.hw-faq details[open] p { animation: faqIn .45s var(--ease-out); }
+@keyframes faqIn { from { opacity: 0; translate: 0 -8px; } }
+/* Finder result button + magnetic buttons (world.js sets translate). */
+.hw-go { height: 30px; margin-left: 6px; padding: 0 12px; border: 0; border-radius: 999px; background: var(--ink); color: #fff; font: inherit; font-size: var(--fs-s); cursor: pointer; }
+.hw-go:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.hw .pill.mag { transition: translate .25s var(--ease-out); }
 /* Cards rise in one after another. */
 .hw-c[data-reveal]:not(.in) { opacity: 0; }
 .hw-c[data-reveal].in { animation: hwRise .9s var(--ease-out) calc(var(--d) * 120ms) backwards; }
@@ -521,6 +551,8 @@ details[open] .hw-x::after { rotate: 0deg; }
 @media (prefers-reduced-motion: reduce) {
   .sv-c details { transform: none; }
   .hw-pass, .hw-c { transition: none; }
+  .hw-main.in .hw-pass, .hw-c:hover .hw-ic, .hw-c:hover .hw-ic circle, .hw-faq details[open] p { animation: none; }
+  .hw-h em { transition: none; }
   .hw-c[data-reveal]:not(.in) { opacity: 1; }
   .hw-c[data-reveal].in, .hw-main.in .hw-i path { animation: none; }
   .hw-main .hw-i path { stroke-dashoffset: 0; }

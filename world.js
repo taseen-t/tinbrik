@@ -261,8 +261,11 @@ hwViews.forEach((b) => b.addEventListener('click', () => {
 {
   const deck = [...document.querySelectorAll('.hw-deck .hw-c')], wide = matchMedia('(width > 760px)');
   let ticking = false;
+  const hwH = $('.hw-h'), deckEl = $('.hw-deck');
   const depth = () => {
     ticking = false;
+    // Headline shrinks to 72% over the first 500px of the cards.
+    if (wide.matches) hwH.style.setProperty('--hs', (1 - 0.28 * clamp((180 - deckEl.getBoundingClientRect().top) / 500)).toFixed(3));
     deck.forEach((c, i) => {
       const next = deck[i + 1];
       let p = 0;
@@ -280,6 +283,13 @@ hwViews.forEach((b) => b.addEventListener('click', () => {
 // Plan finder: two answers vote for a plan (the second breaks a tie); that card and table column light up.
 {
   const res = $('.hw-res'), cmp = $('#hwCmp'), plans = ['Monthly', 'One project', 'Quick fix'], picked = [null, null];
+  // Scroll to the picked card where it sits in the stack (or to the table in Compare; sideways on phones).
+  const goTo = (plan) => {
+    const deck = $('.hw-deck'), card = $(`.hw-c[data-plan="${plan}"]`), smooth = reduce ? 'auto' : 'smooth';
+    if (deck.hidden) return cmp.scrollIntoView({ behavior: smooth, block: 'center' });
+    if (innerWidth <= 760) { deck.scrollTo({ left: card.offsetLeft - 16, behavior: smooth }); return deck.scrollIntoView({ behavior: smooth, block: 'start' }); }
+    scrollTo({ top: deck.getBoundingClientRect().top + scrollY + card.offsetTop - 96 - plan * 28, behavior: smooth });
+  };
   document.querySelectorAll('.hw-opts').forEach((g) => g.addEventListener('click', (e) => {
     const b = e.target.closest('button');
     if (!b) return;
@@ -287,10 +297,26 @@ hwViews.forEach((b) => b.addEventListener('click', () => {
     picked[+g.dataset.q] = +b.dataset.p;
     if (picked.includes(null)) return;
     const plan = picked[0] === picked[1] || picked[0] === 1 && picked[1] === 2 ? picked[1] : picked[0] === 2 ? picked[1] : picked[0];
-    res.innerHTML = `<b>${plans[plan]}</b> fits best.`;
+    res.innerHTML = `<b>${plans[plan]}</b> fits best. <button type="button" class="hw-go">See ${plans[plan]} ↓</button>`;
+    res.querySelector('.hw-go').addEventListener('click', () => goTo(plan));
     document.querySelectorAll('.hw-c').forEach((c) => c.classList.toggle('pick', +c.dataset.plan === plan));
     cmp.dataset.pick = plan;
   }));
+}
+
+// The page's cream deepens while "How to work with us" fills the screen.
+new IntersectionObserver(([e]) => document.documentElement.classList.toggle('hw-on', e.isIntersecting), { rootMargin: '-35% 0px -35% 0px' }).observe($('.hw'));
+
+// Magnetic buttons: card and table buttons lean up to 8px toward a nearby mouse.
+if (!reduce) for (const b of document.querySelectorAll('.hw .pill')) {
+  b.classList.add('mag');
+  b.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    const r = b.getBoundingClientRect();
+    const dx = clamp((e.clientX - r.left - r.width / 2) / (r.width / 2), -1, 1), dy = clamp((e.clientY - r.top - r.height / 2) / (r.height / 2), -1, 1);
+    b.style.translate = `${(dx * 8).toFixed(1)}px ${(dy * 5).toFixed(1)}px`;
+  });
+  b.addEventListener('pointerleave', () => { b.style.translate = ''; });
 }
 
 // ---------- Tab title while away ----------
