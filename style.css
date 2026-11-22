@@ -312,17 +312,14 @@ details[open] .sv-plus::after { rotate: 0deg; }
 .hw-h { font-size: calc(clamp(40px, 5vw, 76px) * var(--hs, 1)); }
 .hw-intro { margin: 0; max-width: 400px; font-size: 18px; line-height: 1.45; color: var(--muted); }
 .hw-cards { display: flex; flex-direction: column; gap: 16px; padding-top: 80px; }
-.hw-c { position: relative; display: flex; flex-direction: column; gap: 12px; padding: 32px; border-radius: 20px; background: #fff; transition: opacity .3s, transform .4s var(--ease-out); }
-/* Hover focus: the hovered card lifts, the others fade back. */
-.hw-cards:has(.hw-c:hover) .hw-c:not(:hover) { opacity: .45; }
+.hw-c { position: relative; display: flex; flex-direction: column; gap: 12px; padding: 32px; border-radius: 20px; background: #fff; transition: transform .4s var(--ease-out); }
+/* Hover: the card under the mouse lifts. */
 .hw-c:hover { transform: translateY(-6px); }
 .hw-c h3 { margin: 0; font-size: clamp(44px, 5vw, 80px); line-height: 1; letter-spacing: -0.035em; font-weight: 500; }
 .hw-sub { margin: 0; font-size: var(--fs-s); color: var(--muted); }
 .hw-for { align-self: flex-start; margin: 2px 0 0; padding: 4px 12px; border: 1px solid var(--faint); border-radius: 999px; font-size: var(--fs-s); }
 .hw-main .hw-for { border-color: #ffffff40; color: #ffffffcc; }
 /* A big outline icon in each card's bottom-right corner. */
-.hw-ic { position: absolute; right: 32px; bottom: 32px; width: 64px; height: 64px; fill: none; stroke: var(--ink); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
-.hw-main .hw-ic { stroke: var(--hl); }
 /* Cards stack: each sticks a little lower than the last while the next slides up over it. */
 .hw-deck { position: relative; display: flex; flex-direction: column; gap: 16px; } /* relative: card offsets are measured from the deck (finder button) */
 .hw-deck[hidden] { display: none; }
@@ -409,16 +406,6 @@ details[open] .sv-plus::after { rotate: 0deg; }
 /* Pass drops in: tossed onto the card with a small bounce when the card appears. */
 .hw-main.in .hw-pass { animation: passDrop 1s var(--ease-out) .45s backwards; }
 @keyframes passDrop { 0% { opacity: 0; translate: -40px -150px; rotate: -26deg; } 55% { opacity: 1; translate: 0 8px; rotate: 12deg; } 75% { translate: 0 -4px; rotate: 6deg; } 100% { translate: 0 0; rotate: 8deg; } }
-/* Icons come alive on card hover: the calendar turns, the target pulses, the bolt flickers. */
-.hw-c[data-plan="0"]:hover .hw-ic { animation: icTurn .9s var(--ease-out); }
-@keyframes icTurn { from { rotate: y 0deg; } to { rotate: y 360deg; } }
-.hw-c[data-plan="1"] .hw-ic circle { transform-box: fill-box; transform-origin: center; }
-.hw-c[data-plan="1"]:hover .hw-ic circle { animation: icPulse 1.2s ease-in-out infinite; }
-.hw-c[data-plan="1"]:hover .hw-ic circle:nth-child(2) { animation-delay: .12s; }
-.hw-c[data-plan="1"]:hover .hw-ic circle:nth-child(3) { animation-delay: .24s; }
-@keyframes icPulse { 50% { scale: 1.18; } }
-.hw-c[data-plan="2"]:hover .hw-ic { animation: icFlick .9s steps(1); }
-@keyframes icFlick { 10%, 30%, 55% { opacity: .15; } 20%, 40%, 70%, 100% { opacity: 1; } }
 /* FAQ answers slide down and fade in. */
 .hw-faq details[open] p { animation: faqIn .45s var(--ease-out); }
 @keyframes faqIn { from { opacity: 0; translate: 0 -8px; } }
@@ -436,7 +423,7 @@ details[open] .sv-plus::after { rotate: 0deg; }
 .hw-main.in li:nth-child(1) path { animation-delay: .7s; } .hw-main.in li:nth-child(2) path { animation-delay: .85s; }
 .hw-main.in li:nth-child(3) path { animation-delay: 1s; } .hw-main.in li:nth-child(4) path { animation-delay: 1.15s; }
 @keyframes tick { to { stroke-dashoffset: 0; } }
-.hw-main > :not(.hw-pass, .hw-ic) { position: relative; }
+.hw-main > :not(.hw-pass) { position: relative; }
 /* Pass shine: a glint sweeps across the pass on hover. */
 .hw-pf::after { content: ""; position: absolute; inset: -20% auto -20% 0; width: 40%; background: linear-gradient(90deg, #fff0, #ffffffb3, #fff0); translate: -150% 0; rotate: 20deg; }
 .hw-main:hover .hw-pf::after { translate: 400% 0; transition: translate .8s var(--ease-out); }
@@ -542,7 +529,6 @@ details[open] .hw-x::after { rotate: 0deg; }
   .hw-deck .hw-c { position: relative; top: auto; flex: 0 0 86%; scroll-snap-align: center; scale: none; }
   .hw-deck .hw-c::after { display: none; }
   .hw-cards { padding-top: 0; }
-  .hw-ic { display: none; } /* the buttons fill the card's width on phones */
   .hw-c { padding: 24px; }
   .hw-main .hw-list { grid-template-columns: 1fr; }
   .foot { padding-inline: 16px; }
@@ -552,7 +538,7 @@ details[open] .hw-x::after { rotate: 0deg; }
 @media (prefers-reduced-motion: reduce) {
   .sv-c details { transform: none; }
   .hw-pass, .hw-c { transition: none; }
-  .hw-main.in .hw-pass, .hw-c:hover .hw-ic, .hw-c:hover .hw-ic circle, .hw-faq details[open] p { animation: none; }
+  .hw-main.in .hw-pass, .hw-faq details[open] p { animation: none; }
   .hw-h em { transition: none; }
   .hw-c[data-reveal]:not(.in) { opacity: 1; }
   .hw-c[data-reveal].in, .hw-main.in .hw-i path { animation: none; }
