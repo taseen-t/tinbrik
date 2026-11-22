@@ -247,12 +247,19 @@ for (const b of document.querySelectorAll('.ft-copy')) {
   });
 }
 
-// Compare table: a group heading folds its rows away and back.
-for (const b of document.querySelectorAll('.hw-gh button')) b.addEventListener('click', () => {
-  const open = b.getAttribute('aria-expanded') !== 'true';
-  b.setAttribute('aria-expanded', open);
-  b.closest('tbody').classList.toggle('shut', !open);
-});
+// Compare table: a group heading folds its rows away and back; "Fold all" does every group.
+const hwCmp = $('#hwCmp'), hwHeads = [...document.querySelectorAll('.hw-gh button')], hwAll = $('.hw-all');
+const fold = (b, open) => { b.setAttribute('aria-expanded', open); b.closest('tbody').classList.toggle('shut', !open); };
+const syncAll = () => { hwAll.textContent = hwHeads.some((b) => b.getAttribute('aria-expanded') === 'true') ? 'Fold all' : 'Open all'; };
+for (const b of hwHeads) b.addEventListener('click', () => { fold(b, b.getAttribute('aria-expanded') !== 'true'); syncAll(); });
+hwAll.addEventListener('click', () => { const open = hwAll.textContent === 'Open all'; hwHeads.forEach((b) => fold(b, open)); syncAll(); });
+// Key / All: Key keeps only "The basics".
+const hwSeg = document.querySelectorAll('.hw-seg button');
+hwSeg.forEach((b) => b.addEventListener('click', () => { hwSeg.forEach((x) => x.setAttribute('aria-pressed', x === b)); hwCmp.dataset.view = b.dataset.v; }));
+// Phones: the picker chooses which plan's column shows.
+const hwPick = $('.hw-pick select');
+hwCmp.dataset.show = hwPick.value;
+hwPick.addEventListener('change', () => { hwCmp.dataset.show = hwPick.value; });
 
 // Once the plan header sticks, it paints the page colour above itself so rows don't show behind the nav.
 {
@@ -260,8 +267,6 @@ for (const b of document.querySelectorAll('.hw-gh button')) b.addEventListener('
   addEventListener('scroll', () => head.classList.toggle('stuck', head.parentElement.getBoundingClientRect().top < 64), { passive: true });
 }
 
-// The page's cream deepens while "How to work with us" fills the screen.
-new IntersectionObserver(([e]) => document.documentElement.classList.toggle('hw-on', e.isIntersecting), { rootMargin: '-35% 0px -35% 0px' }).observe($('.hw'));
 
 // Magnetic buttons: card and table buttons lean up to 8px toward a nearby mouse.
 if (!reduce) for (const b of document.querySelectorAll('.hw .pill')) {

@@ -1,6 +1,6 @@
 /* Tokens measured from the reference; everything below is written fresh. */
 :root {
-  --bg: #f7f4ec; /* warm cream */
+  --bg: #fff;
   --ink: #111;
   --muted: #11111199;
   --faint: #11111133;
@@ -21,10 +21,6 @@
 *::before,
 *::after { box-sizing: border-box; }
 
-/* --bg is a registered colour so it can fade (the page deepens while "How to work with us" is on screen). */
-@property --bg { syntax: "<color>"; inherits: true; initial-value: #f7f4ec; }
-:root { transition: --bg .9s ease; }
-:root.hw-on { --bg: #ede6d6; }
 html, body { margin: 0; overflow-x: clip; background: var(--bg); }
 html { -webkit-font-smoothing: antialiased; scroll-padding-top: 50px; }
 body {
@@ -339,6 +335,41 @@ details[open] .sv-plus::after { rotate: 0deg; }
 .hw-i circle { fill: var(--ink); }
 .hw-i path { fill: none; stroke: var(--hl); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 .hw-cmp tr:has(.hw-l) td { vertical-align: top; }
+/* Plan columns on top, after Figma's plan row: three open columns split by thin rules, lined up with the table's plan columns. */
+.hw-plans { display: grid; grid-template-columns: 22% repeat(3, 1fr); border-top: 1px solid var(--ink); }
+.hw-p { display: flex; flex-direction: column; gap: 6px; padding: 20px 20px 24px; border-left: 1px solid var(--faint); }
+.hw-p:first-child { grid-column: 2; }
+.hw-p h3 { margin: 0 0 4px; font-size: 26px; font-weight: 500; letter-spacing: -0.03em; }
+.hw-p-sub { margin: 0; font-size: 14px; color: var(--muted); }
+.hw-p-pay { margin: 18px 0 0; padding-top: 14px; border-top: 1px solid var(--faint); font-size: 17px; font-weight: 500; }
+.hw-p-for { margin: 0 0 18px; font-size: 14px; color: var(--muted); }
+.hw-p .pill { align-self: flex-start; height: 40px; padding: 0 16px; margin-top: auto; }
+/* Bar above the table: big heading, phone plan picker, fold-all and the Key / All switch. */
+.hw-bar { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-top: 72px; }
+.hw-ch { margin: 0; font-size: clamp(36px, 4.4vw, 64px); line-height: 1; letter-spacing: -0.04em; font-weight: 500; }
+.hw-ctl { display: flex; align-items: center; gap: 10px; }
+.hw-all { height: 40px; padding: 0 14px; border: 0; background: none; font: inherit; font-size: 14px; color: var(--muted); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.hw-all:hover { color: var(--ink); }
+.hw-seg { display: inline-flex; gap: 2px; padding: 4px; border-radius: 999px; background: #1111110d; }
+.hw-seg button { height: 34px; padding: 0 16px; border: 0; border-radius: 999px; background: none; font: inherit; font-size: 14px; color: var(--muted); cursor: pointer; }
+.hw-seg button[aria-pressed="true"] { background: #fff; color: var(--ink); font-weight: 500; box-shadow: 0 1px 2px #11111114; }
+:is(.hw-all, .hw-seg button, .hw-pick select):focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.hw-pick { display: none; }
+.hw-cmp[data-view="key"] .hw-more { display: none; }
+/* Column lights up on hover: hovering any cell tints its whole plan column. */
+.hw-cmp table:has(:is(td, th):nth-child(2):hover) :is(td, thead th):nth-child(2),
+.hw-cmp table:has(:is(td, th):nth-child(3):hover) :is(td, thead th):nth-child(3),
+.hw-cmp table:has(:is(td, th):nth-child(4):hover) :is(td, thead th):nth-child(4) { background-color: #fff8d9; } /* solid, so rows never show through the stuck header */
+/* Header shrinks when stuck: only the plan names stay. */
+.hw-cmp thead :is(span:not([aria-hidden]), .pill) { transition: opacity .2s; }
+.hw-cmp thead.stuck :is(span:not([aria-hidden]), .pill) { display: none; }
+/* Ticks pop in one by one when What's included scrolls into view. */
+tr[data-reveal]:not(.in) .hw-i { scale: 0; }
+tr[data-reveal].in .hw-i { animation: tickPop .45s cubic-bezier(.3,1.6,.5,1) backwards; }
+tr[data-reveal].in li:nth-child(2) .hw-i { animation-delay: .1s; }
+tr[data-reveal].in li:nth-child(3) .hw-i { animation-delay: .2s; }
+tr[data-reveal].in li:nth-child(4) .hw-i { animation-delay: .3s; }
+@keyframes tickPop { from { scale: 0; } }
 /* Arrow buttons: the arrow slides out and a fresh one slides in on hover. */
 .hw .pill span[aria-hidden="true"] { display: inline-block; overflow: hidden; width: 1em; line-height: 1.2; vertical-align: -0.1em; -webkit-text-fill-color: transparent; text-shadow: 0 0 currentColor, -1em 1em currentColor; transition: text-shadow .35s var(--ease-out); }
 .hw .pill:hover span[aria-hidden="true"] { text-shadow: 1em -1em currentColor, 0 0 currentColor; }
@@ -447,16 +478,25 @@ details[open] .hw-x::after { rotate: 0deg; }
   .sv-list { grid-template-columns: 1fr; }
   .sv-c:nth-child(2) { margin-top: 0; }
   /* Phones: the table scrolls sideways inside its box (the header stops sticking there). */
-  .hw-cmp { overflow-x: auto; }
-  .hw-cmp table { width: 640px; }
-  .hw-cmp thead th { position: static; }
+  /* Phones: plan columns stack; the picker shows one plan's column beside the row labels. */
+  .hw-plans { grid-template-columns: 1fr; }
+  .hw-p:first-child { grid-column: auto; }
+  .hw-p { border-left: 0; border-bottom: 1px solid var(--faint); padding-inline: 0; }
+  .hw-bar { margin-top: 48px; }
+  .hw-pick { display: flex; flex-direction: column; gap: 2px; padding: 6px 12px; border-radius: 10px; background: #1111110d; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .hw-pick select { border: 0; background: none; font: inherit; font-size: 16px; letter-spacing: 0; text-transform: none; color: var(--ink); }
+  .hw-cmp table { table-layout: auto; } /* fixed layout would keep room for the hidden plan columns */
+  .hw-cmp thead th:first-child { width: 38%; }
+  .hw-cmp :is(th, td):nth-child(n+2) { display: none; }
+  .hw-cmp .hw-gh th, .hw-cmp[data-show="0"] :is(th, td):nth-child(2), .hw-cmp[data-show="1"] :is(th, td):nth-child(3), .hw-cmp[data-show="2"] :is(th, td):nth-child(4) { display: table-cell; }
   .foot { padding-inline: 16px; }
   .ft-top, .ft-cols { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .sv-c details { transform: none; }
-  .hw-faq details[open] p { animation: none; }
+  .hw-faq details[open] p, tr[data-reveal].in .hw-i { animation: none; }
+  tr[data-reveal]:not(.in) .hw-i { scale: 1; }
   .hw-h em { transition: none; }
   .sv-h span { opacity: 1; translate: none; transition: none; }
   .sv-c details::details-content { transition: none; }
