@@ -88,10 +88,18 @@
           <h2 class="hw-h" id="hwH">One studio,<br><em>three ways to work</em></h2>
           <p class="hw-intro">Start with what fits your work today. You can move from one to another whenever that changes.</p>
           <div class="hw-view" role="group" aria-label="View"><button type="button" class="on" aria-pressed="true" data-v="cards">Cards</button><button type="button" aria-pressed="false" data-v="cmp" aria-controls="hwCmp">Compare</button></div>
+          <div class="hw-find" role="group" aria-labelledby="hwFindK">
+            <p class="hw-find-k" id="hwFindK">Find your plan</p>
+            <p class="hw-q">How often do you need design?</p>
+            <div class="hw-opts" data-q="0"><button type="button" aria-pressed="false" data-p="0">Every week</button><button type="button" aria-pressed="false" data-p="1">Once, for something big</button><button type="button" aria-pressed="false" data-p="2">Now and then</button></div>
+            <p class="hw-q">How big is the job?</p>
+            <div class="hw-opts" data-q="1"><button type="button" aria-pressed="false" data-p="0">Ongoing work</button><button type="button" aria-pressed="false" data-p="1">A full brand or site</button><button type="button" aria-pressed="false" data-p="2">One small change</button></div>
+            <p class="hw-res" aria-live="polite"></p>
+          </div>
         </div>
         <div class="hw-cards">
           <div class="hw-deck">
-          <article class="hw-c hw-main" data-reveal style="--d:0">
+          <article class="hw-c hw-main" data-reveal data-plan="0" style="--d:0">
             <button type="button" class="hw-pass" aria-pressed="false" aria-label="Flip the Monthly pass"><span class="hw-flip"><span class="hw-pf"><span class="hw-bricks"></span><span class="hw-pass-t">Monthly</span></span><span class="hw-pb"><b>Stop any time</b><span>Month to month</span></span></span></button>
             <div class="hw-row"><h3>Monthly</h3><span class="hw-tag">Stop any time</span></div>
             <p class="hw-sub">Your design team on call</p>
@@ -101,7 +109,7 @@
             <div class="hw-btns"><a class="pill hl" href="#">Start monthly <span aria-hidden="true">↗</span></a><a class="pill ghost" href="#">Book a call <span aria-hidden="true">↗</span></a></div>
             <svg class="hw-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14h.01M12 14h.01M16 14h.01M8 17h.01M12 17h.01"/></svg>
           </article>
-          <article class="hw-c" data-reveal style="--d:1">
+          <article class="hw-c" data-reveal data-plan="1" style="--d:1">
             <h3>One project</h3><p class="hw-sub">A clear start and finish</p><p class="hw-for">Best for: a new brand, site or launch</p>
             <p class="hw-d">For a new brand, a website, a launch or a packaging range. We take it from first idea to files you can use.</p>
             <dl class="hw-term"><dt>Timeframe</dt><dd>Agreed on the first call</dd></dl>
@@ -109,7 +117,7 @@
             <div class="hw-btns"><a class="pill go" href="#">Start a project <span aria-hidden="true">↗</span></a></div>
             <svg class="hw-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg>
           </article>
-          <article class="hw-c" data-reveal style="--d:2">
+          <article class="hw-c" data-reveal data-plan="2" style="--d:2">
             <h3>Quick fix</h3><p class="hw-sub">One small job, done fast</p><p class="hw-for">Best for: small changes to what you have</p>
             <p class="hw-d">For a broken page, a new banner, a menu update or a label change. Small jobs that don't need a whole project.</p>
             <dl class="hw-term"><dt>Price</dt><dd>Quoted before we start</dd></dl>
@@ -126,10 +134,10 @@
               <tr><th scope="row">How long</th><td>Monthly, stop any time</td><td>Agreed on the first call</td><td>One small job, done fast</td></tr>
               <tr><th scope="row">Who you talk to</th><td>The people doing the work</td><td>One person the whole way</td><td>Send it in one message</td></tr>
               <tr><th scope="row">Contract</th><td>Stop any time</td><td>Per project</td><td>None, no minimum</td></tr>
-              <tr><th scope="row"></th><td><a class="pill hl" href="#">Start monthly ↗</a></td><td><a class="pill go" href="#">Start a project ↗</a></td><td><a class="pill go" href="#">Ask for a quick fix ↗</a></td></tr>
+              <tr><th scope="row"></th><td><a class="pill hl" href="#">Start monthly <span aria-hidden="true">↗</span></a></td><td><a class="pill go" href="#">Start a project <span aria-hidden="true">↗</span></a></td><td><a class="pill go" href="#">Ask for a quick fix <span aria-hidden="true">↗</span></a></td></tr>
             </tbody></table></div>
           <div class="hw-not"><p>Not sure which fits? Tell us what you need and we'll point you to one.</p><a class="pill go" href="#">Book a call <span aria-hidden="true">↗</span></a></div>
-          <div class="hw-faq"><h3>Questions</h3><details name="hwq"><summary>Can I switch between the three?<span class="hw-x" aria-hidden="true"></span></summary><p>Yes. Move from one project to monthly, or pause monthly and send a quick fix, whenever your work changes.</p></details><details name="hwq"><summary>What happens after I book a call?<span class="hw-x" aria-hidden="true"></span></summary><p>We talk through what you need, then send a written plan and quote. Nothing starts until you agree to it.</p></details><details name="hwq"><summary>How fast do quick fixes come back?<span class="hw-x" aria-hidden="true"></span></summary><p>Placeholder: your usual turnaround for a small job.</p></details><details name="hwq"><summary>Who owns the files?<span class="hw-x" aria-hidden="true"></span></summary><p>Placeholder: confirm your file handover and ownership terms.</p></details></div>
+          <div class="hw-faq"><h3>Questions</h3><details name="hwq"><summary>Can I switch between the three?<span class="hw-x" aria-hidden="true"></span></summary><p>Yes. Move from one project to monthly, or pause monthly and send a quick fix, whenever your work changes.</p></details><details name="hwq"><summary>What happens after I book a call?<span class="hw-x" aria-hidden="true"></span></summary><p>We talk through what you need, then send a written plan and quote. Nothing starts until you agree to it.</p></details><details name="hwq"><summary>How fast do quick fixes come back?<span class="hw-x" aria-hidden="true"></span></summary><p>Placeholder: your usual turnaround for a small job.</p></details><details name="hwq"><summary>Who owns the files?<span class="hw-x" aria-hidden="true"></span></summary><p>Placeholder: confirm your file handover and ownership terms.</p></details><p class="hw-ask">Still have a question? <span>hello@tinbrik.com</span> <button class="pill ft-copy" type="button" data-copy="hello@tinbrik.com">Copy</button></p></div>
         </div>
       </div>
     </section>

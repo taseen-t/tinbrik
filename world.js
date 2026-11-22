@@ -257,6 +257,42 @@ hwViews.forEach((b) => b.addEventListener('click', () => {
   hwDeck.hidden = cmp; hwCmp.hidden = !cmp;
 }));
 
+// Stack depth: while the next card slides over a stuck one, the stuck card shrinks a little and darkens.
+{
+  const deck = [...document.querySelectorAll('.hw-deck .hw-c')], wide = matchMedia('(width > 760px)');
+  let ticking = false;
+  const depth = () => {
+    ticking = false;
+    deck.forEach((c, i) => {
+      const next = deck[i + 1];
+      let p = 0;
+      if (next && wide.matches && !deck[0].parentElement.hidden) {
+        const r = c.getBoundingClientRect(), n = next.getBoundingClientRect();
+        p = clamp((r.bottom - n.top) / r.height);
+      }
+      c.style.setProperty('--s', (1 - p * 0.06).toFixed(4));
+      c.style.setProperty('--dim', (p * 0.35).toFixed(3));
+    });
+  };
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(depth); } }, { passive: true });
+}
+
+// Plan finder: two answers vote for a plan (the second breaks a tie); that card and table column light up.
+{
+  const res = $('.hw-res'), cmp = $('#hwCmp'), plans = ['Monthly', 'One project', 'Quick fix'], picked = [null, null];
+  document.querySelectorAll('.hw-opts').forEach((g) => g.addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    g.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', x === b));
+    picked[+g.dataset.q] = +b.dataset.p;
+    if (picked.includes(null)) return;
+    const plan = picked[0] === picked[1] || picked[0] === 1 && picked[1] === 2 ? picked[1] : picked[0] === 2 ? picked[1] : picked[0];
+    res.innerHTML = `<b>${plans[plan]}</b> fits best.`;
+    document.querySelectorAll('.hw-c').forEach((c) => c.classList.toggle('pick', +c.dataset.plan === plan));
+    cmp.dataset.pick = plan;
+  }));
+}
+
 // ---------- Tab title while away ----------
 const title = document.title;
 document.addEventListener('visibilitychange', () => {

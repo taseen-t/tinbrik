@@ -295,9 +295,9 @@ details[open] .sv-plus::after { rotate: 0deg; }
    + Designjoy's featured dark membership card with a tilted pass poking out of it. */
 /* The headline stays pinned on the left while the cards scroll past on the right. */
 .hw { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 56px; margin-top: 14svh; }
-.hw-top { position: sticky; top: 96px; align-self: start; display: flex; flex-direction: column; gap: 20px; }
+.hw-top { position: sticky; top: 84px; align-self: start; display: flex; flex-direction: column; gap: 14px; }
 .hw-k { margin: 0; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
-.hw-h { margin: 0; font-size: clamp(40px, 5.6vw, 88px); line-height: 1; letter-spacing: -0.04em; font-weight: 500; text-wrap: balance; }
+.hw-h { margin: 0; font-size: clamp(40px, 5vw, 76px); line-height: 1; letter-spacing: -0.04em; font-weight: 500; text-wrap: balance; }
 .hw-h em { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; letter-spacing: -0.02em; }
 .hw-intro { margin: 0; max-width: 400px; font-size: 18px; line-height: 1.45; color: var(--muted); }
 .hw-cards { display: flex; flex-direction: column; gap: 16px; padding-top: 80px; }
@@ -315,6 +315,9 @@ details[open] .sv-plus::after { rotate: 0deg; }
 /* Cards stack: each sticks a little lower than the last while the next slides up over it. */
 .hw-deck { display: flex; flex-direction: column; gap: 16px; }
 .hw-deck[hidden] { display: none; }
+/* Stack depth: a covered card shrinks and darkens (world.js sets --s and --dim). */
+.hw-deck .hw-c { scale: var(--s, 1); transform-origin: 50% 0; }
+.hw-deck .hw-c::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: #111; opacity: var(--dim, 0); pointer-events: none; }
 .hw-deck .hw-c { position: sticky; z-index: 1; top: calc(96px + var(--d) * 28px); } /* z-index: each card is its own layer, so the pass stays under the next card */
 /* View switch (Cards / Compare) under the pinned intro. */
 .hw-view { display: inline-flex; align-self: flex-start; gap: 4px; padding: 4px; border-radius: 999px; background: #fff; }
@@ -330,6 +333,30 @@ details[open] .sv-plus::after { rotate: 0deg; }
 .hw-cmp tbody td:nth-child(2) { background: #1111110a; }
 .hw-cmp tbody th { font-size: var(--fs-s); font-weight: 400; color: var(--muted); white-space: nowrap; }
 .hw-cmp tr:last-child > * { border-bottom: 0; }
+.hw-cmp tbody tr:not(:last-child):hover > * { background: #ffe36e4d; } /* the row under the mouse lights up */
+.hw-cmp tbody tr > * { transition: background-color .15s; }
+/* Arrow buttons: the arrow slides out and a fresh one slides in on hover. */
+.hw .pill span[aria-hidden="true"] { display: inline-block; overflow: hidden; width: 1em; line-height: 1.2; vertical-align: -0.1em; -webkit-text-fill-color: transparent; text-shadow: 0 0 currentColor, -1em 1em currentColor; transition: text-shadow .35s var(--ease-out); }
+.hw .pill:hover span[aria-hidden="true"] { text-shadow: 1em -1em currentColor, 0 0 currentColor; }
+/* Plan finder in the pinned column. */
+.hw-find { display: flex; flex-direction: column; gap: 6px; max-width: 420px; padding: 14px 16px; border-radius: 16px; background: #fff; }
+.hw-find-k { margin: 0 0 2px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.hw-q { margin: 4px 0 0; font-size: var(--fs-s); }
+.hw-opts { display: flex; flex-wrap: wrap; gap: 6px; }
+.hw-opts button { height: 32px; padding: 0 12px; border: 1px solid var(--faint); border-radius: 999px; background: none; font: inherit; font-size: var(--fs-s); color: var(--ink); cursor: pointer; transition: background-color .2s, border-color .2s; }
+.hw-opts button:hover { border-color: var(--ink); }
+.hw-opts button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+.hw-opts button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.hw-res { margin: 4px 0 0; min-height: 1.4em; font-size: var(--fs-m); font-weight: 500; }
+.hw-res:empty { display: none; }
+.hw-res b { padding: 0 .2em; background: var(--hl); font-weight: 500; }
+/* The plan that fits gets a yellow ring and a badge. */
+.hw-c.pick { outline: 3px solid var(--hl); outline-offset: 4px; }
+.hw-c.pick::before { content: "Fits you"; position: absolute; z-index: 3; top: -14px; left: 28px; padding: 4px 10px; border-radius: 999px; background: var(--hl); color: var(--ink); font-size: 12px; font-weight: 500; }
+.hw-cmp[data-pick="0"] tbody td:nth-child(2), .hw-cmp[data-pick="1"] tbody td:nth-child(3), .hw-cmp[data-pick="2"] tbody td:nth-child(4) { box-shadow: inset 0 0 0 9999px #ffe36e33; }
+/* "Still have a question?" line under the FAQ. */
+.hw-ask { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 24px 0 0; color: var(--muted); }
+.hw-ask span { color: var(--ink); user-select: all; }
 .hw-cmp .pill { height: 40px; padding: 0 14px; border-radius: 999px; white-space: nowrap; }
 .hw-d { margin: 0; font-size: 16px; line-height: 1.5; color: var(--muted); }
 .hw-term { margin: 4px 0 0; padding: 12px 0; border-block: 1px solid var(--faint); }
@@ -341,7 +368,8 @@ details[open] .sv-plus::after { rotate: 0deg; }
 .hw-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 16px; }
 .hw-btns .pill { height: 44px; padding: 0 18px; border-radius: 999px; font-size: var(--fs-m); }
 /* Featured card (Designjoy): ink, a "stop any time" tag, a dashed rule, an inset "Included" box. */
-.hw-main { background: var(--ink); color: #fff; }
+.hw-main { background: var(--ink); color: #fff; border-top: 3px solid var(--hl); } /* yellow edge marks the main plan */
+.hw-c:not(.hw-main) { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='42' height='44'%3E%3Cpath d='M0 21h42M0 43h42M41 0v21M20 22v21' stroke='%23111' stroke-opacity='.022' stroke-width='2'/%3E%3C/svg%3E"); } /* faint brick texture */
 .hw-main .hw-sub { color: #ffffff99; }
 .hw-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-bottom: 18px; border-bottom: 1px dashed #ffffff40; }
 .hw-tag { padding: 6px 10px; border: 1px solid #ffffff40; border-radius: 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #ffffffb3; white-space: nowrap; }
@@ -477,7 +505,12 @@ details[open] .hw-x::after { rotate: 0deg; }
   .sv-c:nth-child(2) { margin-top: 0; }
   .hw { grid-template-columns: 1fr; gap: 0; }
   .hw-top { position: static; }
-  .hw-deck .hw-c { top: calc(72px + var(--d) * 20px); }
+  /* Phone swipe: the cards sit side by side and snap as you swipe. */
+  .hw-deck { flex-direction: row; gap: 12px; margin-inline: -16px; padding: 96px 16px 8px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .hw-deck::-webkit-scrollbar { display: none; }
+  .hw-deck .hw-c { position: relative; top: auto; flex: 0 0 86%; scroll-snap-align: center; scale: none; }
+  .hw-deck .hw-c::after { display: none; }
+  .hw-cards { padding-top: 0; }
   .hw-ic { right: 24px; bottom: 24px; width: 44px; height: 44px; }
   .hw-c { padding: 24px; }
   .hw-main .hw-list { grid-template-columns: 1fr; }
