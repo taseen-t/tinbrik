@@ -436,7 +436,7 @@ details[open] .sv-plus::after { rotate: 0deg; }
 .hw-main.in li:nth-child(1) path { animation-delay: .7s; } .hw-main.in li:nth-child(2) path { animation-delay: .85s; }
 .hw-main.in li:nth-child(3) path { animation-delay: 1s; } .hw-main.in li:nth-child(4) path { animation-delay: 1.15s; }
 @keyframes tick { to { stroke-dashoffset: 0; } }
-.hw-main > :not(.hw-pass) { position: relative; }
+.hw-main > :not(.hw-pass, .hw-ic) { position: relative; }
 /* Pass shine: a glint sweeps across the pass on hover. */
 .hw-pf::after { content: ""; position: absolute; inset: -20% auto -20% 0; width: 40%; background: linear-gradient(90deg, #fff0, #ffffffb3, #fff0); translate: -150% 0; rotate: 20deg; }
 .hw-main:hover .hw-pf::after { translate: 400% 0; transition: translate .8s var(--ease-out); }
@@ -534,7 +534,7 @@ details[open] .hw-x::after { rotate: 0deg; }
   .sv-top { margin-left: 0; }
   .sv-list { grid-template-columns: 1fr; }
   .sv-c:nth-child(2) { margin-top: 0; }
-  .hw { grid-template-columns: 1fr; gap: 0; }
+  .hw { grid-template-columns: minmax(0, 1fr); gap: 0; } /* minmax: the swipe row must not widen the column past the screen */
   .hw-top { position: static; }
   /* Phone swipe: the cards sit side by side and snap as you swipe. */
   .hw-deck { flex-direction: row; gap: 12px; margin-inline: -16px; padding: 96px 16px 8px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
@@ -542,7 +542,7 @@ details[open] .hw-x::after { rotate: 0deg; }
   .hw-deck .hw-c { position: relative; top: auto; flex: 0 0 86%; scroll-snap-align: center; scale: none; }
   .hw-deck .hw-c::after { display: none; }
   .hw-cards { padding-top: 0; }
-  .hw-ic { right: 24px; bottom: 24px; width: 44px; height: 44px; }
+  .hw-ic { display: none; } /* the buttons fill the card's width on phones */
   .hw-c { padding: 24px; }
   .hw-main .hw-list { grid-template-columns: 1fr; }
   .foot { padding-inline: 16px; }

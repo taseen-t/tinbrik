@@ -13,3 +13,9 @@
 .bt-words span { animation: bt-words 8s var(--ease-out) infinite; }
 @keyframes bt-words { 0%, 22% { translate: 0 0; } 25%, 47% { translate: 0 -100%; } 50%, 72% { translate: 0 -200%; } 75%, 100% { translate: 0 -300%; } }
 @media (prefers-reduced-motion: reduce) { .bt-words span { animation: none; } }
+
+/* Phones: a smaller Book a call, so the floating one doesn't cover the text it sits over. */
+@media (width <= 760px) {
+  :is(.book, .float) { width: 200px; height: 52px; padding: 0 5px 0 20px; font-size: 16px; }
+  .bt-seg { width: 52px; }
+}

@@ -30,3 +30,9 @@
 .stage[data-i].opened .now { opacity: 1; translate: none; }
 
 @media (prefers-reduced-motion: reduce) { .big .w, .big mark, .stage[data-i] .now, .cta { transition: none; } }
+
+/* Phones: the button and "What we do" stack, centred; the slot matches the smaller button. */
+@media (width <= 760px) {
+  .cta { flex-direction: column; gap: 16px; }
+  .book-slot { width: 200px; height: 52px; }
+}

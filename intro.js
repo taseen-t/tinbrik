@@ -10,7 +10,8 @@ const marked = (t) => { let k = 0, m = 0; return t.split(/(\[[^\]]+\])/).map((pa
   return pad(/^\s/) + (part.startsWith('[') ? `<mark style="--k:${m++}">${ws}</mark>` : ws) + pad(/\s$/);
 }).join(''); };
 
-const html = marked('We make [brands people remember] for [small, ambitious teams].').replace('">remember<', '" data-serif>remember<');
+// The full stop sits inside the last mark, so it never wraps onto a line of its own.
+const html = marked('We make [brands people remember] for [small, ambitious teams.]').replace('">remember<', '" data-serif>remember<');
 intro.innerHTML = `
   <h1 class="big">${html}</h1>
   <p class="lead now">One small studio for your logo, your website and your packaging, from first sketch to launch.</p>
