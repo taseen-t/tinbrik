@@ -247,61 +247,17 @@ for (const b of document.querySelectorAll('.ft-copy')) {
   });
 }
 
-// The Monthly pass flips on click; Cards / Compare swaps the deck for the table.
-const hwPass = $('.hw-pass');
-hwPass?.addEventListener('click', () => hwPass.setAttribute('aria-pressed', hwPass.getAttribute('aria-pressed') !== 'true'));
-const hwDeck = $('.hw-deck'), hwCmp = $('#hwCmp'), hwViews = document.querySelectorAll('.hw-view button');
-hwViews.forEach((b) => b.addEventListener('click', () => {
-  const cmp = b.dataset.v === 'cmp';
-  hwViews.forEach((x) => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
-  hwDeck.hidden = cmp; hwCmp.hidden = !cmp;
-}));
+// Compare table: a group heading folds its rows away and back.
+for (const b of document.querySelectorAll('.hw-gh button')) b.addEventListener('click', () => {
+  const open = b.getAttribute('aria-expanded') !== 'true';
+  b.setAttribute('aria-expanded', open);
+  b.closest('tbody').classList.toggle('shut', !open);
+});
 
-// Stack depth: while the next card slides over a stuck one, the stuck card shrinks a little and darkens.
+// Once the plan header sticks, it paints the page colour above itself so rows don't show behind the nav.
 {
-  const deck = [...document.querySelectorAll('.hw-deck .hw-c')], wide = matchMedia('(width > 760px)');
-  let ticking = false;
-  const hwH = $('.hw-h'), deckEl = $('.hw-deck');
-  const depth = () => {
-    ticking = false;
-    // Headline shrinks to 72% over the first 500px of the cards.
-    if (wide.matches) hwH.style.setProperty('--hs', (1 - 0.28 * clamp((180 - deckEl.getBoundingClientRect().top) / 500)).toFixed(3));
-    deck.forEach((c, i) => {
-      const next = deck[i + 1];
-      let p = 0;
-      if (next && wide.matches && !deck[0].parentElement.hidden) {
-        const r = c.getBoundingClientRect(), n = next.getBoundingClientRect();
-        p = clamp((r.bottom - n.top) / r.height);
-      }
-      c.style.setProperty('--s', (1 - p * 0.06).toFixed(4));
-      c.style.setProperty('--dim', (p * 0.35).toFixed(3));
-    });
-  };
-  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(depth); } }, { passive: true });
-}
-
-// Plan finder: two answers vote for a plan (the second breaks a tie); that card and table column light up.
-{
-  const res = $('.hw-res'), cmp = $('#hwCmp'), plans = ['Monthly', 'One project', 'Quick fix'], picked = [null, null];
-  // Scroll to the picked card where it sits in the stack (or to the table in Compare; sideways on phones).
-  const goTo = (plan) => {
-    const deck = $('.hw-deck'), card = $(`.hw-c[data-plan="${plan}"]`), smooth = reduce ? 'auto' : 'smooth';
-    if (deck.hidden) return cmp.scrollIntoView({ behavior: smooth, block: 'center' });
-    if (innerWidth <= 760) { deck.scrollTo({ left: card.offsetLeft - 16, behavior: smooth }); return deck.scrollIntoView({ behavior: smooth, block: 'start' }); }
-    scrollTo({ top: deck.getBoundingClientRect().top + scrollY + card.offsetTop - 96 - plan * 28, behavior: smooth });
-  };
-  document.querySelectorAll('.hw-opts').forEach((g) => g.addEventListener('click', (e) => {
-    const b = e.target.closest('button');
-    if (!b) return;
-    g.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', x === b));
-    picked[+g.dataset.q] = +b.dataset.p;
-    if (picked.includes(null)) return;
-    const plan = picked[0] === picked[1] || picked[0] === 1 && picked[1] === 2 ? picked[1] : picked[0] === 2 ? picked[1] : picked[0];
-    res.innerHTML = `<b>${plans[plan]}</b> fits best. <button type="button" class="hw-go">See ${plans[plan]} ↓</button>`;
-    res.querySelector('.hw-go').addEventListener('click', () => goTo(plan));
-    document.querySelectorAll('.hw-c').forEach((c) => c.classList.toggle('pick', +c.dataset.plan === plan));
-    cmp.dataset.pick = plan;
-  }));
+  const head = $('.hw-cmp thead');
+  addEventListener('scroll', () => head.classList.toggle('stuck', head.parentElement.getBoundingClientRect().top < 64), { passive: true });
 }
 
 // The page's cream deepens while "How to work with us" fills the screen.
