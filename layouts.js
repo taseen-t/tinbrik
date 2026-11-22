@@ -41,7 +41,8 @@ export const wave = {
 // Hero wall layout: Tunnel. Rings of cards line an oval tunnel you look down into; they drift
 // toward you and wrap back to the far end. turn spins the tunnel. Cards are angled toward the
 // middle but capped at 50°, so none goes edge-on.
-const SLOTS = 14, PER = 9;
+// 10 rings x 9 = 90 tiles. 126 (14 rings) dropped to ~40 fps with stalls; 81-90 holds 60 fps (22 Nov).
+const SLOTS = 10, PER = 9;
 export const tunnel = {
   build(G) {
     const out = [], D = G.P * 0.3; // depth between rings
@@ -49,7 +50,7 @@ export const tunnel = {
     for (let r = 0; r < SLOTS; r++) {
       for (let i = 0; i < PER; i++) {
         const item = (n * 5) % G.items.length, w = Math.round(G.W * 0.9 * COLS[n % COLS.length]);
-        out.push({ w, h: Math.round(w / G.items[item].ratio), a: (i / PER) * 360 + r * 37 + hash(n) * 14, z0: r * D, len: SLOTS * D, item });
+        out.push({ w, h: Math.round(w / G.items[item].ratio), a: (i / PER) * 360 + r * 37 + hash(n) * 14, z0: r * D, len: SLOTS * D, ring: r, item });
         n++;
       }
     }
@@ -57,9 +58,16 @@ export const tunnel = {
   },
   place(s, t, G) {
     const a = (s.a + t.turn * 0.6) * RAD, ex = innerWidth * 0.46, ey = innerHeight * 0.44;
-    const z = wrap(s.z0 + t.drift * 5, s.len) - s.len + G.P * 0.62; // far end .. just past the camera
+    const travel = s.z0 + t.drift * 5;
+    // Far end .. half the camera distance (2x size at most: tiles are rastered once, so closer would blur).
+    const zEnd = G.P * 0.5, z = wrap(travel, s.len) - s.len + zEnd;
+    // Paint order: rings never pass each other, so a ring's order only changes when it wraps to the far end.
+    // (Rewriting z-index from z every frame re-sorted ~50 layers a frame and stalled the page.)
+    const order = s.ring - Math.floor(travel / s.len) * SLOTS;
     const x = Math.cos(a) * (ex + s.w * 0.3), y = Math.sin(a) * (ey + s.h * 0.3);
-    const fade = Math.min(1, ((z + s.len - G.P * 0.62) / (G.P * 2.2)) ** 2); // far cards fade in, so the middle stays calm
-    return { x, y, z, ry: Math.cos(a) * -50, rx: Math.sin(a) * 50, fade };
+    // Far cards fade in (so the middle stays calm). Near cards stay opaque: big see-through tiles cost the GPU
+    // a lot of blending, and they wrap off the screen's edge anyway.
+    const fade = Math.min(1, ((z + s.len - zEnd) / (s.len * 0.45)) ** 2);
+    return { x, y, z, ry: Math.cos(a) * -50, rx: Math.sin(a) * 50, fade, order };
   },
 };

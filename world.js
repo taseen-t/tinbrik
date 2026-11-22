@@ -389,13 +389,13 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 
-// Playing videos inside moving 3D tiles cost the most: on Taseen's Mac 1 playing video keeps
-// 60 fps, 2 drop the wall to 30. So only the video nearest the middle plays; the rest hold a still frame.
-// ponytail: fixed cap of 1, raise it once the real videos are encoded small (e.g. 480p, same fps).
+// Videos in moving 3D tiles are costly: re-measured 22 Nov, 2 playing still drop the wall to 30 fps, 1 keeps 60.
+// The rest hold a still frame. ponytail: cap of 1, re-measure (frame test) before raising it.
 let videoT = 0;
 function pickVideos() {
   const max = still() ? 0 : 1;
-  const live = cards.filter((c) => c.video && c.shown).sort((a, b) => b.near - a.near); // biggest on screen first
+  // Mid-tunnel tiles (near natural size) stay on screen longest, so they get the videos.
+  const live = cards.filter((c) => c.video && c.shown && c.el.style.opacity > 0.6).sort((a, b) => Math.abs(a.near - 1) - Math.abs(b.near - 1));
   live.forEach((c, i) => (i < max ? c.video.play().catch(() => {}) : c.video.pause()));
 }
 
@@ -418,8 +418,7 @@ function drawWall(now, dt, life) {
   if (q > 0.05) dot.classList.remove('on');
 
   if (!reduce) { const k = 1 - 0.02 ** dt, tx = pointerIn ? px : 0, ty = pointerIn ? py : 0;
-    mx += (tx - mx) * k; my += (ty - my) * k;
-    world.style.perspectiveOrigin = `${(50 + mx * 8).toFixed(2)}% ${(50 + my * 8).toFixed(2)}%`; }
+    mx += (tx - mx) * k; my += (ty - my) * k; }
   const { P } = G;
   const t = { turn: rot, drift, tilt: 0 }, diag = Math.hypot(innerWidth, innerHeight);
   // Hover: only tiles inside a small circle around the cursor rise a little; the wave keeps running.
@@ -440,8 +439,10 @@ function drawWall(now, dt, life) {
         const push = ((Math.max(0, diag / 1.7 - d) + 250) / s) * open;
         const stagger = d / 700;
         const enter = reduce ? 1 : easeOut3(clamp((life - 0.1 - stagger * 0.9) / 0.9));
-        x += Math.cos(dir) * push;
-        y += Math.sin(dir) * push;
+        // Parallax: one shared 3D offset; perspective makes near tiles move more than far ones.
+        // (Moving perspective-origin instead made the browser redraw every tile: ~70 ms stalls.)
+        x += Math.cos(dir) * push - mx * 70;
+        y += Math.sin(dir) * push - my * 45;
         const want = near ? clamp(1 - Math.hypot(sx - cx, sy - cy) / 300) : 0;
         card.lift += (want * want - card.lift) * (1 - 0.004 ** dt);
         const z = pose.z - (1 - enter) * 500 + 160 * open + card.lift * 45;
@@ -452,8 +453,8 @@ function drawWall(now, dt, life) {
           card.el.style.transform =
             `translate3d(${(x - w / 2).toFixed(1)}px,${(y - h / 2).toFixed(1)}px,${z.toFixed(1)}px) rotateY(${ry.toFixed(2)}deg) rotateX(${rx.toFixed(2)}deg)`;
           // Nearer cards paint on top (siblings aren't depth-sorted without preserve-3d).
-          const zi = Math.round(z / 8) + 1000;
-          if (zi !== card.z) card.el.style.zIndex = card.z = zi;
+          const zi = pose.order != null ? 100000 + pose.order : Math.round(z / 8) + 1000;
+          if (zi !== card.z) card.el.style.zIndex = card.z = zi; // changes only when the layout's order does
         }
       }
     }
@@ -462,7 +463,7 @@ function drawWall(now, dt, life) {
       card.el.style.visibility = show ? 'visible' : 'hidden';
       if (card.video && !show) card.video.pause();
     }
-    if (show) card.el.style.opacity = opacity.toFixed(3);
+    if (show) { const o = opacity > 0.995 ? '1' : opacity.toFixed(2); if (o !== card.op) card.el.style.opacity = card.op = o; } // skip unchanged writes
   }
   if (now - videoT > 400) { videoT = now; pickVideos(); }
 }
